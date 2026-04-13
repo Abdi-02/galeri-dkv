@@ -23,41 +23,88 @@
             <a href="#" class="text-decoration-none text-danger fw-medium">Lihat Semua &rarr;</a>
         </div>
 
-        <div class="row g-4">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+        <h4 class="fw-bold text-dark mb-0">Sorotan Karya</h4>
+        <a href="/galeri" class="text-decoration-none text-smk-blue fw-medium">Lihat Semua &rarr;</a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @forelse($karyas as $karya)
             <div class="col-md-4">
-                <div class="card card-karya border-0 shadow-sm h-100">
-                    <img src="https://images.unsplash.com/photo-1626785773579-c13f6cb55705?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Thumbnail Karya" style="height: 250px; object-fit: cover;">
-                    <div class="card-body p-4">
-                        <span class="badge bg-primary mb-2">Desain Grafis</span>
-                        <h5 class="card-title fw-bold text-dark">Poster Kebudayaan Papua</h5>
-                        <p class="text-muted small mb-3">Oleh: Budi Santoso</p>
-                        <a href="#" class="btn btn-outline-primary w-100 rounded-pill">Lihat Detail</a>
+                <a href="/karya/{{ $karya->id }}" class="galeri-item text-decoration-none">
+                    
+                    @php $ext = pathinfo($karya->file_karya, PATHINFO_EXTENSION); @endphp
+                    @if(in_array(strtolower($ext), ['mp4', 'mov']))
+                        <video muted loop onmouseover="this.play()" onmouseout="this.pause()">
+                            <source src="{{ asset('storage/' . $karya->file_karya) }}" type="video/{{ $ext }}">
+                        </video>
+                    @else
+                        <img src="{{ asset('storage/' . $karya->file_karya) }}" alt="{{ $karya->judul_karya }}">
+                    @endif
+
+                    <div class="galeri-overlay">
+                        <h5>{{ $karya->judul_karya }}</h5>
+                        <p>{{ $karya->nama_siswa }} &bull; {{ $karya->nama_kategori }}</p>
                     </div>
+                </a>
+            </div>
+        @empty
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Karya belum tersedia.</p>
+            </div>
+        @endforelse
+    </div>
+
+    <div class="py-5 mt-5">
+        <div class="text-center mb-5">
+            <h4 class="fw-bold">Apa Yang Kami Pelajari?</h4>
+            <p class="text-muted">Kompetensi inti yang dikembangkan di Jurusan DKV SMKN 1 Nabire</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="p-4 border-0 shadow-sm rounded-4 bg-white h-100">
+                    <span class="fs-1">🎨</span>
+                    <h6 class="fw-bold mt-3">Desain Grafis</h6>
+                    <p class="small text-muted mb-0">Identitas visual, poster, dan media cetak digital.</p>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card card-karya border-0 shadow-sm h-100">
-                    <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Thumbnail Karya" style="height: 250px; object-fit: cover;">
-                    <div class="card-body p-4">
-                        <span class="badge bg-danger mb-2">Ilustrasi</span>
-                        <h5 class="card-title fw-bold text-dark">Maskot Burung Cenderawasih</h5>
-                        <p class="text-muted small mb-3">Oleh: Siti Aminah</p>
-                        <a href="#" class="btn btn-outline-primary w-100 rounded-pill">Lihat Detail</a>
-                    </div>
+            <div class="col-md-3">
+                <div class="p-4 border-0 shadow-sm rounded-4 bg-white h-100">
+                    <span class="fs-1">🎬</span>
+                    <h6 class="fw-bold mt-3">Videografi</h6>
+                    <p class="small text-muted mb-0">Produksi video pendek, editing, dan efek visual.</p>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card card-karya border-0 shadow-sm h-100">
-                    <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="card-img-top" alt="Thumbnail Karya" style="height: 250px; object-fit: cover;">
-                    <div class="card-body p-4">
-                        <span class="badge bg-warning text-dark mb-2">Fotografi</span>
-                        <h5 class="card-title fw-bold text-dark">Senja di Pantai Nabire</h5>
-                        <p class="text-muted small mb-3">Oleh: Andi Wijaya</p>
-                        <a href="#" class="btn btn-outline-primary w-100 rounded-pill">Lihat Detail</a>
-                    </div>
+            <div class="col-md-3">
+                <div class="p-4 border-0 shadow-sm rounded-4 bg-white h-100">
+                    <span class="fs-1">📸</span>
+                    <h6 class="fw-bold mt-3">Fotografi</h6>
+                    <p class="small text-muted mb-0">Teknik kamera profesional dan pengolahan foto digital.</p>
                 </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4 border-0 shadow-sm rounded-4 bg-white h-100">
+                    <span class="fs-1">🌐</span>
+                    <h6 class="fw-bold mt-3">Interaktif</h6>
+                    <p class="small text-muted mb-0">Perancangan antarmuka web dan media interaktif.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-smk-blue rounded-4 p-5 text-white my-5 shadow">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h2 class="fw-bold mb-0">200+</h2>
+                <p class="opacity-75">Siswa Aktif</p>
+            </div>
+            <div class="col-md-4 border-start border-end border-white border-opacity-25">
+                <h2 class="fw-bold mb-0">500+</h2>
+                <p class="opacity-75">Karya Terarsip</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="fw-bold mb-0">4+</h2>
+                <p class="opacity-75">Bidang Konsentrasi</p>
             </div>
         </div>
     </div>

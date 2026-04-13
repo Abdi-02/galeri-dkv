@@ -2,52 +2,62 @@
 
 @section('konten')
     <div class="text-center mb-5 mt-4">
-        <h2 class="fw-bold display-6 text-primary">Eksplorasi Galeri Karya</h2>
-        <p class="text-muted fs-5">Temukan inspirasi dari berbagai bidang keahlian siswa-siswi DKV</p>
+        <h2 class="fw-bold text-dark">Eksplorasi Karya DKV</h2>
+        
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <form action="/galeri" method="GET" class="d-flex gap-2">
+                    @if(request('kategori'))
+                        <input type="hidden" name="kategori" value="{{ request('kategori') }}">
+                    @endif
+                    <input type="text" name="search" class="form-control rounded-pill px-4 shadow-sm border-0" 
+                           placeholder="Cari judul karya atau nama siswa..." value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-utama rounded-pill px-4">Cari</button>
+                </form>
+            </div>
+        </div>
 
         <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
-            <a href="/galeri" class="btn {{ !request('kategori') ? 'btn-oranye' : 'btn-outline-secondary' }} rounded-pill px-4 fw-medium shadow-sm">
-                Semua Karya
-            </a>
-            
+            <a href="/galeri" class="btn btn-filter px-4 {{ !request('kategori') ? 'active' : '' }}">Semua</a>
             @foreach($kategoris as $kategori)
-                <a href="/galeri?kategori={{ $kategori->id }}" class="btn {{ request('kategori') == $kategori->id ? 'btn-oranye' : 'btn-outline-secondary' }} rounded-pill px-4 fw-medium shadow-sm">
-                    {{ $kategori->nama_kategori }}
+                <a href="/galeri?kategori={{ $kategori->id }}&search={{ request('search') }}" 
+                   class="btn btn-filter px-4 {{ request('kategori') == $kategori->id ? 'active' : '' }}">
+                   {{ $kategori->nama_kategori }}
                 </a>
             @endforeach
         </div>
     </div>
 
-    <div class="row g-4 mb-5">
+    <div class="row g-4 mb-4">
         @forelse($karyas as $karya)
-            <div class="col-md-4">
-                <div class="card card-karya border-0 shadow-sm h-100">
+            <div class="col-md-4 col-sm-6">
+                <a href="/karya/{{ $karya->id }}" class="galeri-item text-decoration-none">
                     
-                    @php 
-                        $ext = pathinfo($karya->file_karya, PATHINFO_EXTENSION); 
-                    @endphp
-                    
+                    @php $ext = pathinfo($karya->file_karya, PATHINFO_EXTENSION); @endphp
                     @if(in_array(strtolower($ext), ['mp4', 'mov']))
-                        <video class="card-img-top bg-dark" style="height: 250px; object-fit: cover;" controls controlsList="nodownload">
+                        <video muted loop onmouseover="this.play()" onmouseout="this.pause()">
                             <source src="{{ asset('storage/' . $karya->file_karya) }}" type="video/{{ $ext }}">
                         </video>
                     @else
-                        <img src="{{ asset('storage/' . $karya->file_karya) }}" class="card-img-top" alt="{{ $karya->judul_karya }}" style="height: 250px; object-fit: cover;">
+                        <img src="{{ asset('storage/' . $karya->file_karya) }}" alt="{{ $karya->judul_karya }}">
                     @endif
 
-                    <div class="card-body p-4">
-                        <span class="badge bg-primary mb-2">{{ $karya->nama_kategori }}</span>
-                        <h5 class="card-title fw-bold text-dark">{{ $karya->judul_karya }}</h5>
-                        <p class="text-muted small mb-3">Oleh: {{ $karya->nama_siswa }} | {{ $karya->tahun_ajaran }}</p>
-                        <a href="/karya/{{ $karya->id }}" class="btn btn-outline-primary w-100 rounded-pill fw-medium">Lihat Detail</a>
+                    <div class="galeri-overlay">
+                        <h5>{{ $karya->judul_karya }}</h5>
+                        <p>{{ $karya->nama_siswa }} &bull; {{ $karya->tahun_ajaran }}</p>
                     </div>
-                </div>
+                </a>
             </div>
         @empty
             <div class="col-12 text-center py-5">
-                <h5 class="text-muted">Karya belum tersedia di kategori ini.</h5>
-                <a href="/galeri" class="btn btn-primary mt-3 rounded-pill px-4">Lihat Kategori Lain</a>
+                <h5 class="text-muted">Karya tidak ditemukan.</h5>
+                <p class="text-muted small">Coba ubah kata kunci pencarian atau pilih kategori lain.</p>
+                <a href="/galeri" class="btn btn-utama mt-3 px-4 rounded-pill">Reset Pencarian</a>
             </div>
         @endforelse
+    </div>
+
+    <div class="d-flex justify-content-center mt-5">
+        {{ $karyas->links('pagination::bootstrap-5') }}
     </div>
 @endsection

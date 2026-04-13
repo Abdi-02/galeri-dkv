@@ -17,6 +17,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/galeri', [PublicController::class, 'galeri']);
 Route::get('/karya/{id}', [PublicController::class, 'detail']);
 
+
+Route::get('/tentang-kami', function () {
+    return view('tentang');
+});
+
 use App\Http\Controllers\AdminController;
 
 // Rute yang dilindungi oleh 'satpam' (middleware auth)
@@ -35,6 +40,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/edit-karya/{id}', [AdminController::class, 'prosesEdit']); // Pakai PUT untuk update data
     Route::get('/pengaturan', [AdminController::class, 'pengaturan']);
     Route::put('/pengaturan', [AdminController::class, 'updatePengaturan']);
-
     
 });
+
